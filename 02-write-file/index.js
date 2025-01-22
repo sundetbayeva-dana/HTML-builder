@@ -10,7 +10,14 @@ const rl = readline.createInterface({ input, output });
 writeFile();
 
 rl.question('You are welcome to type the text \n', (data) => writeFile(data));
-rl.on('line', (input) => writeFile(input));
+rl.on('line', (input) => {
+  if (input.trim() === 'exit') {
+    output.write('Goodbye!');
+    rl.pause();
+  } else {
+    writeFile(input)
+  }
+});
 
 rl.on('SIGINT', () => {
   output.write('Goodbye!');
