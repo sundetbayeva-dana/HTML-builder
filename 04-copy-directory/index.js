@@ -1,4 +1,5 @@
 const fsPromises = require('node:fs/promises');
+const fs = require('fs');
 const path = require('node:path');
 
 const filesFolder = path.join(__dirname, 'files');
@@ -18,12 +19,24 @@ async function makeDirectory() {
 
 makeDirectory().catch(console.error);
 
-fsPromises.readdir(filesFolder).then((files) => {
-  files.forEach((file) => {
-    fsPromises
-      .copyFile(getAbsPath('files', file), getAbsPath('files-copy', file))
-      .then((err) => {
+function deleteOldFiles() {
+  return fsPromises.readdir(destFolder).then((files) => {
+    files.forEach((file) => {
+      fs.unlink(getAbsPath('files-copy', file), (err) => {
         if (err) throw err;
       });
+    });
+  });
+}
+
+deleteOldFiles().then(() => {
+  fsPromises.readdir(filesFolder).then((files) => {
+    files.forEach((file) => {
+      fsPromises
+        .copyFile(getAbsPath('files', file), getAbsPath('files-copy', file))
+        .then((err) => {
+          if (err) throw err;
+        });
+    });
   });
 });

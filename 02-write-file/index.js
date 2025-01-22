@@ -15,7 +15,7 @@ rl.on('line', (input) => {
     output.write('Goodbye!');
     rl.pause();
   } else {
-    writeFile(input)
+    writeFile(input);
   }
 });
 
