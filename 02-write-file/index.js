@@ -9,7 +9,14 @@ const rl = readline.createInterface({ input, output });
 
 writeFile();
 
-rl.question('You are welcome to type the text \n', (data) => writeFile(data));
+rl.question('You are welcome to type the text \n', (data) => {
+  if (data.trim() === 'exit') {
+    output.write('Goodbye!');
+    rl.pause();
+  } else {
+    writeFile(data);
+  }
+});
 rl.on('line', (input) => {
   if (input.trim() === 'exit') {
     output.write('Goodbye!');

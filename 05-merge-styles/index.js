@@ -34,30 +34,27 @@ function deleteOldFiles() {
   });
 }
 
-deleteOldFiles()
-  .then(() => {
-    fsPromises
-      .readdir(styleFolderPath, { withFileTypes: true })
-      .then((files) => {
-        return files.filter(
-          (file) => file.isFile() && path.extname(file.name) === '.css',
+deleteOldFiles().then(() => {
+  fsPromises
+    .readdir(styleFolderPath, { withFileTypes: true })
+    .then((files) => {
+      return files.filter(
+        (file) => file.isFile() && path.extname(file.name) === '.css',
+      );
+    })
+    .then((files) => {
+      files.forEach((file) => {
+        const readStream = fs.createReadStream(
+          styleFolderPath + `/${file.name}`,
+          'utf-8',
         );
-      })
-      .then((files) => {
-        files.forEach((file) => {
-          const readStream = fs.createReadStream(
-            styleFolderPath + `/${file.name}`,
-            'utf-8',
-          );
-          const str = logChunks(readStream);
+        const str = logChunks(readStream);
 
-          str.then((res) => {
-            readStream.close();
-            writeFile(res).then(() => readStream.read());
-          });
+        str.then((res) => {
+          readStream.close();
+          writeFile(res).then(() => readStream.read());
         });
-      })
-      .catch((err) => console.log(err));
-  })
-
-
+      });
+    })
+    .catch((err) => console.log(err));
+});
